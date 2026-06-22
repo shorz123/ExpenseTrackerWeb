@@ -1,6 +1,7 @@
 using ExpenseTracker.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Api.Models;
+using ExpenseTracker.Api.Dtos;
 
 //create app config object
 var builder = WebApplication.CreateBuilder(args);
@@ -30,34 +31,60 @@ if (app.Environment.IsDevelopment())
 // Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 
-//get all
+// get all
 app.MapGet("/expenses", async (ExpenseDbContext db) =>
 {
-    return await db.Expenses.ToListAsync();
+    return await db.Expenses
+        .Select(expense => new ExpenseDto
+        {
+            Id = expense.Id,
+            Title = expense.Title,
+            Amount = expense.Amount,
+            Date = expense.Date
+        })
+        .ToListAsync();
 });
 
-//get by id 
+// get by id
 app.MapGet("/expenses/{id}", async (int id, ExpenseDbContext db) =>
 {
     var expense = await db.Expenses.FindAsync(id);
 
     return expense is not null
-        ? Results.Ok(expense)
+        ? Results.Ok(new ExpenseDto
+        {
+            Id = expense.Id,
+            Title = expense.Title,
+            Amount = expense.Amount,
+            Date = expense.Date
+        })
         : Results.NotFound();
 });
 
-
-//post
-app.MapPost("/expenses", async (Expense expense, ExpenseDbContext db) =>
+// post
+app.MapPost("/expenses", async (CreateExpenseDto dto, ExpenseDbContext db) =>
 {
+    var expense = new Expense
+    {
+        Title = dto.Title,
+        Amount = dto.Amount,
+        Date = dto.Date
+    };
+
     db.Expenses.Add(expense);
     await db.SaveChangesAsync();
 
-    return Results.Created($"/expenses/{expense.Id}", expense);
+    return Results.Created($"/expenses/{expense.Id}", new ExpenseDto
+    {
+        Id = expense.Id,
+        Title = expense.Title,
+        Amount = expense.Amount,
+        Date = expense.Date
+    });
 });
 
-//update
-app.MapPut("/expenses/{id}", async (int id, Expense updatedExpense, ExpenseDbContext db) =>
+// update
+app.MapPut("/expenses/{id}", async (int id, UpdateExpenseDto dto, ExpenseDbContext db) =>
 {
     var expense = await db.Expenses.FindAsync(id);
 
@@ -66,14 +93,20 @@ app.MapPut("/expenses/{id}", async (int id, Expense updatedExpense, ExpenseDbCon
         return Results.NotFound();
     }
 
-    expense.Title = updatedExpense.Title;
-    expense.Amount = updatedExpense.Amount;
-    expense.Date = updatedExpense.Date;
+    expense.Title = dto.Title;
+    expense.Amount = dto.Amount;
+    expense.Date = dto.Date;
 
     await db.SaveChangesAsync();
 
-    return Results.Ok(expense);
-});
+    return Results.Ok(new ExpenseDto
+    {
+        Id = expense.Id,
+        Title = expense.Title,
+        Amount = expense.Amount,
+        Date = expense.Date
+    });
+    });
 
 
 //delete
