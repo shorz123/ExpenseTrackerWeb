@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 
 // Import the Expense model
-using ExpenseTrackerWeb.Api.Models;
+using ExpenseTracker.Api.Models;
 
 // Namespace for database-related classes
-namespace ExpenseTrackerWeb.Api.Data;
+namespace ExpenseTracker.Api.Data;
 
 // Database context class that manages database access
 public class ExpenseDbContext : DbContext
