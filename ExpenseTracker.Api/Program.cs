@@ -1,4 +1,4 @@
-using ExpenseTrackerWeb.Api.Data;
+using ExpenseTracker.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Api.Models;
 
@@ -10,6 +10,11 @@ builder.Services.AddEndpointsApiExplorer();
 
 //Add Swagger services
 builder.Services.AddSwaggerGen();
+
+// Register database context with SQL Server
+builder.Services.AddDbContext<ExpenseDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("ExpenseDatabase")));
 
 //build application
 var app = builder.Build();
@@ -25,70 +30,38 @@ if (app.Environment.IsDevelopment())
 // Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 
-
-var expenses = new List<Expense>
+//get all
+app.MapGet("/expenses", async (ExpenseDbContext db) =>
 {
-    new Expense
-    {
-        Id = 1,
-        Title = "Gas",
-        Amount = 50.00m,
-        Date = DateTime.Today
-    },
-    new Expense
-    {
-        Id = 2,
-        Title = "Groceries",
-        Amount = 120.00m,
-        Date = DateTime.Today
-    }
-};
+    return await db.Expenses.ToListAsync();
+});
 
-
-app.MapGet("/expenses", () =>
+//get by id 
+app.MapGet("/expenses/{id}", async (int id, ExpenseDbContext db) =>
 {
-    return expenses;
+    var expense = await db.Expenses.FindAsync(id);
+
+    return expense is not null
+        ? Results.Ok(expense)
+        : Results.NotFound();
 });
 
 
-app.MapGet("/expenses/{id}", (int id) =>
+//post
+app.MapPost("/expenses", async (Expense expense, ExpenseDbContext db) =>
 {
-    var expense = expenses.FirstOrDefault(e => e.Id == id);
-
-    if (expense == null)
-    {
-        return Results.NotFound();
-    }
-
-    return Results.Ok(expense);
-});
-
-app.MapPost("/expenses", (Expense expense) =>
-{
-    expenses.Add(expense);
+    db.Expenses.Add(expense);
+    await db.SaveChangesAsync();
 
     return Results.Created($"/expenses/{expense.Id}", expense);
 });
 
-app.MapDelete("/expenses/{id}", (int id) =>
+//update
+app.MapPut("/expenses/{id}", async (int id, Expense updatedExpense, ExpenseDbContext db) =>
 {
-    var expense = expenses.FirstOrDefault(e => e.Id == id);
+    var expense = await db.Expenses.FindAsync(id);
 
-    if (expense == null)
-    {
-        return Results.NotFound();
-    }
-
-    expenses.Remove(expense);
-
-    return Results.NoContent();
-});
-
-app.MapPut("/expenses/{id}", (int id, Expense updatedExpense) =>
-{
-    var expense = expenses.FirstOrDefault(e => e.Id == id);
-
-    if (expense == null)
+    if (expense is null)
     {
         return Results.NotFound();
     }
@@ -97,7 +70,26 @@ app.MapPut("/expenses/{id}", (int id, Expense updatedExpense) =>
     expense.Amount = updatedExpense.Amount;
     expense.Date = updatedExpense.Date;
 
+    await db.SaveChangesAsync();
+
     return Results.Ok(expense);
+});
+
+
+//delete
+app.MapDelete("/expenses/{id}", async (int id, ExpenseDbContext db) =>
+{
+    var expense = await db.Expenses.FindAsync(id);
+
+    if (expense is null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Expenses.Remove(expense);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
 });
 
 
