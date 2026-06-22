@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Node modules (for React later)
+node_modules/
+
+# Environment files
+.env
+.env.*
