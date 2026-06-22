@@ -31,3 +31,7 @@ C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\obj\Debug\net10.0\r
 C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\obj\Debug\net10.0\ExpenseTracker.Api.pdb
 C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\obj\Debug\net10.0\ExpenseTracker.Api.genruntimeconfig.cache
 C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\obj\Debug\net10.0\ref\ExpenseTracker.Api.dll
+C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\tocho\projects\ExpenseTrackerWeb\ExpenseTracker.Api\obj\Debug\net10.0\ExpenseTracker.Api.sourcelink.json
