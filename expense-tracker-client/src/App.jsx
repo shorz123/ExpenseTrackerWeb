@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
-const API_URL = 'http://localhost:5113/expenses'
+import {
+  getExpenses,
+  addExpense,
+  updateExpense,
+  deleteExpense
+} from './services/expenseService'
 
 function App() {
   const [expenses, setExpenses] = useState([])
@@ -11,16 +16,15 @@ function App() {
   const [editingId, setEditingId] = useState(null)
 
   useEffect(() => {
-    getExpenses()
+    loadExpenses()
   }, [])
 
-  async function getExpenses() {
-    const response = await fetch(API_URL)
-    const data = await response.json()
+  async function loadExpenses() {
+    const data = await getExpenses()
     setExpenses(data)
   }
 
-  async function addExpense() {
+  async function handleAddExpense() {
     if (!title || !amount || !date) {
       alert('Please fill out all fields')
       return
@@ -32,27 +36,18 @@ function App() {
       date
     }
 
-    await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newExpense)
-    })
+    await addExpense(newExpense)
 
     clearForm()
-    getExpenses()
+    loadExpenses()
   }
 
-  async function deleteExpense(id) {
-    await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE'
-    })
-
-    getExpenses()
+  async function handleDeleteExpense(id) {
+    await deleteExpense(id)
+    loadExpenses()
   }
 
-  function editExpense(expense) {
+  function handleEditExpense(expense) {
     setEditingId(expense.id)
     setTitle(expense.title)
     setAmount(expense.amount)
@@ -64,7 +59,7 @@ function App() {
     }
   }
 
-  async function saveExpense() {
+  async function handleSaveExpense() {
     if (!title || !amount || !date) {
       alert('Please fill out all fields')
       return
@@ -77,16 +72,10 @@ function App() {
       date
     }
 
-    await fetch(`${API_URL}/${editingId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedExpense)
-    })
+    await updateExpense(editingId, updatedExpense)
 
     clearForm()
-    getExpenses()
+    loadExpenses()
   }
 
   function clearForm() {
@@ -122,9 +111,9 @@ function App() {
         />
 
         {editingId === null ? (
-          <button onClick={addExpense}>Add Expense</button>
+          <button onClick={handleAddExpense}>Add Expense</button>
         ) : (
-          <button onClick={saveExpense}>Save Expense</button>
+          <button onClick={handleSaveExpense}>Save Expense</button>
         )}
 
         <button onClick={clearForm}>Clear</button>
@@ -145,13 +134,13 @@ function App() {
             <tr key={expense.id}>
               <td>{expense.title}</td>
               <td>${Number(expense.amount).toFixed(2)}</td>
-              <td> {new Date(expense.date).toLocaleDateString()} </td>
+              <td>{new Date(expense.date).toLocaleDateString()}</td>
               <td>
-                <button onClick={() => editExpense(expense)}>
+                <button onClick={() => handleEditExpense(expense)}>
                   Edit
                 </button>
 
-                <button onClick={() => deleteExpense(expense.id)}>
+                <button onClick={() => handleDeleteExpense(expense.id)}>
                   Delete
                 </button>
               </td>
