@@ -17,8 +17,22 @@ builder.Services.AddDbContext<ExpenseDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("ExpenseDatabase")));
 
+//allow cors
+        builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 //build application
 var app = builder.Build();
+
+//allow cors
+app.UseCors("AllowReactApp");
 
 //sEnable Swagger in dev emv
 if (app.Environment.IsDevelopment())
