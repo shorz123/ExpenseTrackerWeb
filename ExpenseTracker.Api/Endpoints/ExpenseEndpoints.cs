@@ -42,6 +42,15 @@ public static class ExpenseEndpoints
         // post
         app.MapPost("/expenses", async (CreateExpenseDto dto, ExpenseDbContext db) =>
         {
+            if (string.IsNullOrWhiteSpace(dto.Title))
+            {
+            return Results.BadRequest("Title is required.");
+            }
+
+            if (dto.Amount <= 0)
+            {
+            return Results.BadRequest("Amount must be greater than zero.");
+            }
             var expense = new Expense
             {
                 Title = dto.Title,
@@ -69,6 +78,15 @@ public static class ExpenseEndpoints
             if (expense is null)
             {
                 return Results.NotFound();
+            }
+            if (string.IsNullOrWhiteSpace(dto.Title))
+            {
+            return Results.BadRequest("Title is required.");
+            }
+
+            if (dto.Amount <= 0)
+            {
+            return Results.BadRequest("Amount must be greater than zero.");
             }
 
             expense.Title = dto.Title;
