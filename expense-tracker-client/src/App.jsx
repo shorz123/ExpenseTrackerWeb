@@ -105,6 +105,16 @@ function App() {
   return (
     <div>
       <h1>Expense Tracker</h1>
+      <a
+        href="https://github.com/shorz123/ExpenseTrackerWeb/tree/Development/ExpenseTracker.Api"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View GitHub Source Code
+      </a>
+      <p>
+        Technologies: React | ASP.NET Core | Entity Framework Core | SQL Server
+      </p>
 
       <div>
         <input
