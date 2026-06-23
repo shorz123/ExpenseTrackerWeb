@@ -1,7 +1,6 @@
 using ExpenseTracker.Api.Data;
 using Microsoft.EntityFrameworkCore;
-using ExpenseTracker.Api.Models;
-using ExpenseTracker.Api.Dtos;
+using ExpenseTracker.Api.Endpoints;
 
 //create app config object
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +17,7 @@ builder.Services.AddDbContext<ExpenseDbContext>(options =>
         builder.Configuration.GetConnectionString("ExpenseDatabase")));
 
 //allow cors
-        builder.Services.AddCors(options =>
+builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
@@ -34,7 +33,7 @@ var app = builder.Build();
 //allow cors
 app.UseCors("AllowReactApp");
 
-//sEnable Swagger in dev emv
+//Enable Swagger in development environment
 if (app.Environment.IsDevelopment())
 {
     //app.MapOpenApi();
@@ -45,101 +44,7 @@ if (app.Environment.IsDevelopment())
 // Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 
-// get all
-app.MapGet("/expenses", async (ExpenseDbContext db) =>
-{
-    return await db.Expenses
-        .Select(expense => new ExpenseDto
-        {
-            Id = expense.Id,
-            Title = expense.Title,
-            Amount = expense.Amount,
-            Date = expense.Date
-        })
-        .ToListAsync();
-});
-
-// get by id
-app.MapGet("/expenses/{id}", async (int id, ExpenseDbContext db) =>
-{
-    var expense = await db.Expenses.FindAsync(id);
-
-    return expense is not null
-        ? Results.Ok(new ExpenseDto
-        {
-            Id = expense.Id,
-            Title = expense.Title,
-            Amount = expense.Amount,
-            Date = expense.Date
-        })
-        : Results.NotFound();
-});
-
-// post
-app.MapPost("/expenses", async (CreateExpenseDto dto, ExpenseDbContext db) =>
-{
-    var expense = new Expense
-    {
-        Title = dto.Title,
-        Amount = dto.Amount,
-        Date = dto.Date
-    };
-
-    db.Expenses.Add(expense);
-    await db.SaveChangesAsync();
-
-    return Results.Created($"/expenses/{expense.Id}", new ExpenseDto
-    {
-        Id = expense.Id,
-        Title = expense.Title,
-        Amount = expense.Amount,
-        Date = expense.Date
-    });
-});
-
-// update
-app.MapPut("/expenses/{id}", async (int id, UpdateExpenseDto dto, ExpenseDbContext db) =>
-{
-    var expense = await db.Expenses.FindAsync(id);
-
-    if (expense is null)
-    {
-        return Results.NotFound();
-    }
-
-    expense.Title = dto.Title;
-    expense.Amount = dto.Amount;
-    expense.Date = dto.Date;
-
-    await db.SaveChangesAsync();
-
-    return Results.Ok(new ExpenseDto
-    {
-        Id = expense.Id,
-        Title = expense.Title,
-        Amount = expense.Amount,
-        Date = expense.Date
-    });
-    });
-
-
-//delete
-app.MapDelete("/expenses/{id}", async (int id, ExpenseDbContext db) =>
-{
-    var expense = await db.Expenses.FindAsync(id);
-
-    if (expense is null)
-    {
-        return Results.NotFound();
-    }
-
-    db.Expenses.Remove(expense);
-    await db.SaveChangesAsync();
-
-    return Results.NoContent();
-});
-
-
+app.MapExpenseEndpoints();
 
 //Start app
 app.Run();
