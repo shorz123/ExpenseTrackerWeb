@@ -29,6 +29,14 @@ function App() {
       alert('Please fill out all fields')
       return
     }
+    if (Number(amount) <= 0) {
+      alert('Amount must be greater than zero')
+      return
+    }
+    if (title.length > 50) {
+      alert('Title must be 50 characters or less')
+      return
+    }
 
     const newExpense = {
       title,
@@ -64,7 +72,14 @@ function App() {
       alert('Please fill out all fields')
       return
     }
-
+    if (Number(amount) <= 0) {
+      alert('Amount must be greater than zero')
+      return
+    }
+    if (title.length > 50) {
+      alert('Title must be 50 characters or less')
+      return
+    }
     const updatedExpense = {
       id: editingId,
       title,
@@ -84,6 +99,8 @@ function App() {
     setDate('')
     setEditingId(null)
   }
+
+  const totalAmount = expenses.reduce((sum, expense) => sum + expense.amount, 0)
 
   return (
     <div>
@@ -119,6 +136,8 @@ function App() {
         <button onClick={clearForm}>Clear</button>
       </div>
 
+      <h3>Expenses Total: ${totalAmount.toFixed(2)}</h3>
+
       <table>
         <thead>
           <tr>
@@ -139,7 +158,6 @@ function App() {
                 <button onClick={() => handleEditExpense(expense)}>
                   Edit
                 </button>
-
                 <button onClick={() => handleDeleteExpense(expense.id)}>
                   Delete
                 </button>
