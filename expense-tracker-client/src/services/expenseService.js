@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5113/expenses'
+const API_URL = 'http://localhost:5113/api/v1/expenses'
 
 export async function getExpenses() {
     const response = await fetch(API_URL)

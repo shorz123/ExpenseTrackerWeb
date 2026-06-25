@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 //Add Swagger services
 builder.Services.AddSwaggerGen();
 
-// Register database context with SQL Server
+// Register ExpenseDbContext and configure it to use the SQL Server connection string from appsettings.json
 builder.Services.AddDbContext<ExpenseDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("ExpenseDatabase")));
