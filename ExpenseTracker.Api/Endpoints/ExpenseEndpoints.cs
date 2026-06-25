@@ -9,8 +9,10 @@ public static class ExpenseEndpoints
 {
     public static void MapExpenseEndpoints(this WebApplication app)
     {
+        var v1 = app.MapGroup("/api/v1/expenses");
+
         // get all
-        app.MapGet("/expenses", async (ExpenseDbContext db) =>
+        v1.MapGet("/", async (ExpenseDbContext db) =>
         {
             return await db.Expenses
                 .Select(expense => new ExpenseDto
@@ -20,11 +22,12 @@ public static class ExpenseEndpoints
                     Amount = expense.Amount,
                     Date = expense.Date
                 })
+                //runs sql query
                 .ToListAsync();
         });
 
         // get by id
-        app.MapGet("/expenses/{id}", async (int id, ExpenseDbContext db) =>
+        v1.MapGet("/{id}", async (int id, ExpenseDbContext db) =>
         {
             var expense = await db.Expenses.FindAsync(id);
 
@@ -40,7 +43,7 @@ public static class ExpenseEndpoints
         });
 
         // post
-        app.MapPost("/expenses", async (CreateExpenseDto dto, ExpenseDbContext db) =>
+        v1.MapPost("/", async (CreateExpenseDto dto, ExpenseDbContext db) =>
         {
             if (string.IsNullOrWhiteSpace(dto.Title))
             {
@@ -61,7 +64,7 @@ public static class ExpenseEndpoints
             db.Expenses.Add(expense);
             await db.SaveChangesAsync();
 
-            return Results.Created($"/expenses/{expense.Id}", new ExpenseDto
+            return Results.Created($"/api/v1/expenses/{expense.Id}", new ExpenseDto
             {
                 Id = expense.Id,
                 Title = expense.Title,
@@ -71,7 +74,7 @@ public static class ExpenseEndpoints
         });
 
         // update
-        app.MapPut("/expenses/{id}", async (int id, UpdateExpenseDto dto, ExpenseDbContext db) =>
+        v1.MapPut("/{id}", async (int id, UpdateExpenseDto dto, ExpenseDbContext db) =>
         {
             var expense = await db.Expenses.FindAsync(id);
 
@@ -105,7 +108,7 @@ public static class ExpenseEndpoints
         });
 
         // delete
-        app.MapDelete("/expenses/{id}", async (int id, ExpenseDbContext db) =>
+        v1.MapDelete("/{id}", async (int id, ExpenseDbContext db) =>
         {
             var expense = await db.Expenses.FindAsync(id);
 
