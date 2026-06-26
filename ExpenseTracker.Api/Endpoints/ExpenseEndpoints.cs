@@ -1,7 +1,5 @@
-using ExpenseTracker.Api.Data;
 using ExpenseTracker.Api.Dtos;
-using ExpenseTracker.Api.Models;
-using Microsoft.EntityFrameworkCore;
+using ExpenseTracker.Api.Services;
 
 namespace ExpenseTracker.Api.Endpoints;
 
@@ -12,115 +10,61 @@ public static class ExpenseEndpoints
         var v1 = app.MapGroup("/api/v1/expenses");
 
         // get all
-        v1.MapGet("/", async (ExpenseDbContext db) =>
+        v1.MapGet("/", async (ExpenseService service) =>
         {
-            return await db.Expenses
-                .Select(expense => new ExpenseDto
-                {
-                    Id = expense.Id,
-                    Title = expense.Title,
-                    Amount = expense.Amount,
-                    Date = expense.Date
-                })
-                //runs sql query
-                .ToListAsync();
+            var expenses = await service.GetAllExpensesAsync();
+
+            return Results.Ok(expenses);
         });
 
         // get by id
-        v1.MapGet("/{id}", async (int id, ExpenseDbContext db) =>
+        v1.MapGet("/{id}", async (int id, ExpenseService service) =>
         {
-            var expense = await db.Expenses.FindAsync(id);
+            var expense = await service.GetExpenseByIdAsync(id);
 
             return expense is not null
-                ? Results.Ok(new ExpenseDto
-                {
-                    Id = expense.Id,
-                    Title = expense.Title,
-                    Amount = expense.Amount,
-                    Date = expense.Date
-                })
+                ? Results.Ok(expense)
                 : Results.NotFound();
         });
 
         // post
-        v1.MapPost("/", async (CreateExpenseDto dto, ExpenseDbContext db) =>
+        v1.MapPost("/", async (CreateExpenseDto dto, ExpenseService service) =>
         {
-            if (string.IsNullOrWhiteSpace(dto.Title))
+            var result = await service.CreateExpenseAsync(dto);
+
+            if (!result.Success)
             {
-            return Results.BadRequest("Title is required.");
+                return Results.BadRequest(result.ErrorMessage);
             }
 
-            if (dto.Amount <= 0)
-            {
-            return Results.BadRequest("Amount must be greater than zero.");
-            }
-            var expense = new Expense
-            {
-                Title = dto.Title,
-                Amount = dto.Amount,
-                Date = dto.Date
-            };
-
-            db.Expenses.Add(expense);
-            await db.SaveChangesAsync();
-
-            return Results.Created($"/api/v1/expenses/{expense.Id}", new ExpenseDto
-            {
-                Id = expense.Id,
-                Title = expense.Title,
-                Amount = expense.Amount,
-                Date = expense.Date
-            });
+            return Results.Created(
+                $"/api/v1/expenses/{result.Expense!.Id}",
+                result.Expense);
         });
 
         // update
-        v1.MapPut("/{id}", async (int id, UpdateExpenseDto dto, ExpenseDbContext db) =>
+        v1.MapPut("/{id}", async (int id, UpdateExpenseDto dto, ExpenseService service) =>
         {
-            var expense = await db.Expenses.FindAsync(id);
+            var result = await service.UpdateExpenseAsync(id, dto);
 
-            if (expense is null)
+            if (!result.Success)
             {
-                return Results.NotFound();
-            }
-            if (string.IsNullOrWhiteSpace(dto.Title))
-            {
-            return Results.BadRequest("Title is required.");
+                return result.ErrorMessage == "Expense not found."
+                    ? Results.NotFound()
+                    : Results.BadRequest(result.ErrorMessage);
             }
 
-            if (dto.Amount <= 0)
-            {
-            return Results.BadRequest("Amount must be greater than zero.");
-            }
-
-            expense.Title = dto.Title;
-            expense.Amount = dto.Amount;
-            expense.Date = dto.Date;
-
-            await db.SaveChangesAsync();
-
-            return Results.Ok(new ExpenseDto
-            {
-                Id = expense.Id,
-                Title = expense.Title,
-                Amount = expense.Amount,
-                Date = expense.Date
-            });
+            return Results.Ok(result.Expense);
         });
 
         // delete
-        v1.MapDelete("/{id}", async (int id, ExpenseDbContext db) =>
+        v1.MapDelete("/{id}", async (int id, ExpenseService service) =>
         {
-            var expense = await db.Expenses.FindAsync(id);
+            var deleted = await service.DeleteExpenseAsync(id);
 
-            if (expense is null)
-            {
-                return Results.NotFound();
-            }
-
-            db.Expenses.Remove(expense);
-            await db.SaveChangesAsync();
-
-            return Results.NoContent();
+            return deleted
+                ? Results.NoContent()
+                : Results.NotFound();
         });
     }
 }
