@@ -1,6 +1,7 @@
 using ExpenseTracker.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Api.Endpoints;
+using ExpenseTracker.Api.Services;
 
 //create app config object
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,8 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+builder.Services.AddScoped<ExpenseService>();
 
 //build application
 var app = builder.Build();
