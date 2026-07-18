@@ -15,10 +15,7 @@
 
 # Node modules (for React later)
 node_modules/
-<<<<<<< HEAD
 */.vite
-=======
->>>>>>> cfd9890 (Populate .gitignore)
 
 # Environment files
 .env
