@@ -1,22 +1,71 @@
 # Expense Tracker
+A modern full-stack expense tracking application designed to help users organize, search, and manage expenses through a responsive web interface built with ASP.NET Core and React.
 
-A full-stack expense tracking application built with ASP.NET Core, React, and PostgreSQL.
-
-## Features
+## Current Features
+- Create expenses
+- View expenses
+- Update expenses
+- Delete expenses
+- RESTful ASP.NET Core Web API
+- React frontend with JavaScript
+- Entity Framework Core data access
+- Expense search
+  
+## Planned Features
 - User authentication
-- Expense management
-- Receipt uploads
-- Tag filtering
 - Dashboard
-- Search
+- Receipt uploads
+- AI-assisted natural language search
+- Azure deployment
+- Responsive mobile interface
 
-## Technologies
-- ASP.NET Core
+## Architecture
+
+```text
+    ┌─────────────┐
+    │ React Client│
+    └──────┬──────┘
+           │ HTTP
+           ▼
+┌──────────────────────┐
+│ ASP.NET Core Web API │
+└──────────┬───────────┘
+           ▼
+┌──────────────────────┐
+│ Entity Framework Core│
+└──────────┬───────────┘
+           ▼
+┌──────────────────────┐
+│ PostgreSQL Database  │
+└──────────────────────┘
+```
+
+## Tech Stack
+
+### Frontend
+- React
+- JavaScript 
+- Vite
+
+### Backend
+- ASP.NET Core Web API
 - C#
 - Entity Framework Core
-- React
-- TypeScript
-- PostgreSQL
-- Docker
+
+### Database
+- PostgreSQL 
+
+### Cloud
+- Azure App Service (planned)
+- Azure Database for PostgreSQL (planned)
+
+### DevOps
+- Docker (planned)
+- GitHub Actions (planned)
+
+### Development Tools
+- Git
+- GitHub
+- Visual Studio Code
 
 
