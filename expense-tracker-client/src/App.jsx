@@ -113,7 +113,7 @@ function App() {
         View GitHub Source Code
       </a>
       <p>
-        Technologies: React | ASP.NET Core | Entity Framework Core | SQL Server
+        Technologies: React | ASP.NET Core | Entity Framework Core | PostgreSQL Server
       </p>
 
       <div>
