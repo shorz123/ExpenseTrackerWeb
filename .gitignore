@@ -15,6 +15,7 @@ obj/
 
 # Node modules (for React later)
 node_modules/
+*/.vite
 
 # Environment files
 .env
