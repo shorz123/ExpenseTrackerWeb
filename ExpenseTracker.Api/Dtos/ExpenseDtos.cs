@@ -8,7 +8,7 @@ public class ExpenseDto
 
     public decimal Amount { get; set; }
 
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 }
 
 public class CreateExpenseDto
@@ -17,7 +17,7 @@ public class CreateExpenseDto
 
     public decimal Amount { get; set; }
 
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 }
 
 public class UpdateExpenseDto
@@ -26,5 +26,5 @@ public class UpdateExpenseDto
 
     public decimal Amount { get; set; }
 
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 }

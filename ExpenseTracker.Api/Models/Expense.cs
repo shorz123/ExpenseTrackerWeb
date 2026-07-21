@@ -12,5 +12,5 @@ public class Expense
     [Range(.01, 1000000)]
     public decimal Amount { get; set; }
 
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 }
