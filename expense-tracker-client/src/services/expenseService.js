@@ -40,4 +40,15 @@ export async function deleteAllExpenses() {
         throw new Error('Failed to delete all expenses')
     }
 }
+export async function seedExpenses() {
+    const response = await fetch(`${API_URL}/seed`, {
+        method: 'POST'
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to add demo expenses')
+    }
+
+    return response.json()
+}
 

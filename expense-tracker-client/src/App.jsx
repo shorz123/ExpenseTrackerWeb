@@ -6,7 +6,8 @@ import {
   addExpense,
   updateExpense,
   deleteExpense,
-  deleteAllExpenses
+  deleteAllExpenses,
+  seedExpenses
 } from './services/expenseService'
 
 function App() {
@@ -79,6 +80,16 @@ function App() {
       setDate(expense.date.split('T')[0])
     } else {
       setDate(expense.date)
+    }
+  }
+
+  async function handleSeedExpenses() {
+    try {
+      await seedExpenses()
+      await loadExpenses()
+    } catch (error) {
+      console.error(error)
+      alert('Unable to add demo expenses')
     }
   }
 
@@ -164,6 +175,9 @@ function App() {
       <h3>Expenses Total: ${totalAmount.toFixed(2)}</h3>
       <button onClick={handleDeleteAllExpenses}>
         Delete All Expenses
+      </button>
+      <button onClick={handleSeedExpenses}>
+        Add Demo Data
       </button>
 
       <table>

@@ -56,6 +56,13 @@ public static class ExpenseEndpoints
 
             return Results.Ok(result.Expense);
         });
+        // add demo expenses
+        v1.MapPost("/seed", async (ExpenseService service) =>
+{
+            var expenses = await service.SeedExpensesAsync();
+
+            return Results.Ok(expenses);
+});
 
         // delete
         v1.MapDelete("/{id}", async (int id, ExpenseService service) =>
@@ -70,7 +77,7 @@ public static class ExpenseEndpoints
         // deletes every expense
         v1.MapDelete("/all", async (ExpenseService service) =>
         {
-             await service.DeleteAllExpensesAsync();
+            await service.DeleteAllExpensesAsync();
 
             return Results.NoContent();
         });
