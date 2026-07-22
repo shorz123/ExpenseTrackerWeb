@@ -66,5 +66,13 @@ public static class ExpenseEndpoints
                 ? Results.NoContent()
                 : Results.NotFound();
         });
+
+        // deletes every expense
+        v1.MapDelete("/all", async (ExpenseService service) =>
+        {
+             await service.DeleteAllExpensesAsync();
+
+            return Results.NoContent();
+        });
     }
 }

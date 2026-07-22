@@ -5,7 +5,8 @@ import {
   getExpenses,
   addExpense,
   updateExpense,
-  deleteExpense
+  deleteExpense,
+  deleteAllExpenses
 } from './services/expenseService'
 
 function App() {
@@ -53,6 +54,20 @@ function App() {
   async function handleDeleteExpense(id) {
     await deleteExpense(id)
     loadExpenses()
+  }
+
+  async function handleDeleteAllExpenses() {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete all expenses?'
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    await deleteAllExpenses()
+    clearForm()
+    await loadExpenses()
   }
 
   function handleEditExpense(expense) {
@@ -147,6 +162,9 @@ function App() {
       </div>
 
       <h3>Expenses Total: ${totalAmount.toFixed(2)}</h3>
+      <button onClick={handleDeleteAllExpenses}>
+        Delete All Expenses
+      </button>
 
       <table>
         <thead>

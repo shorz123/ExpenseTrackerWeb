@@ -31,3 +31,13 @@ export async function deleteExpense(id) {
     })
 }
 
+export async function deleteAllExpenses() {
+    const response = await fetch(`${API_URL}/all`, {
+        method: 'DELETE'
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to delete all expenses')
+    }
+}
+

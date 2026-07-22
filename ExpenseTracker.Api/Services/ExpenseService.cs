@@ -100,6 +100,11 @@ public class ExpenseService
 
         return true;
     }
+// Deletes every expense from the database. 
+    public async Task DeleteAllExpensesAsync()
+{
+    await _db.Expenses.ExecuteDeleteAsync();
+}
 
     private static string? ValidateExpense(string title, decimal amount)
     {
