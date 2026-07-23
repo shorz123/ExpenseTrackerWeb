@@ -1,51 +1,35 @@
 # Expense Tracker
 A modern full-stack expense tracking application built with ASP.NET Core Web API, React, Entity Framework Core, and PostgreSQL. Users can create, edit, delete, and search expenses through a responsive web interface.
 
-## Demo
 
-The application demonstrates full CRUD functionality, allowing users to create, update, delete, and manage expenses through a React frontend backed by an ASP.NET Core Web API.
-
-
-![Expense Tracker Demo](images/Animation.demo.gif)
+![Expense Tracker Demo](images/Animation.demo2.gif)
 
 ## Features
-- Create expenses
-- View expenses
-- Update expenses
-- Delete expenses
-- RESTful ASP.NET Core Web API
-- React frontend with JavaScript
-- Entity Framework Core data access
+Create, view, update, and delete expenses
+Clear all expense records
+Automatically populate the database with realistic seed data
+RESTful ASP.NET Core Web API
+React frontend built with JavaScript
+Entity Framework Core data access
+PostgreSQL database
 
   
-## Planned Improvements
-- User authentication
-- Dashboard
-- Receipt uploads
-- Expense search
-- Azure deployment
-- Responsive mobile interface
-- AI-assisted natural language search
-
 ## Architecture
 
 ```text
-    ┌─────────────┐
-    │ React + Vite│
-    └──────┬──────┘
-           │ HTTP
-           ▼
-┌──────────────────────┐
-│ ASP.NET Core Web API │
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ Entity Framework Core│
-└──────────┬───────────┘
-           ▼
-┌──────────────────────┐
-│ PostgreSQL Database  │
-└──────────────────────┘
+Browser
+   │
+React UI
+   │
+expenseService.js using fetch()
+   │
+ASP.NET Core REST API endpoints
+   │
+ExpenseService service layer
+   │
+Entity Framework Core
+   │
+PostgreSQL
 ```
 
 ## Tech Stack
@@ -77,26 +61,3 @@ The application demonstrates full CRUD functionality, allowing users to create, 
 - Visual Studio Code
 
 
-## Getting Started
-
-### Prerequisites
-
-- .NET 10 SDK
-- Node.js
-- PostgreSQL
-
-### Backend
-
-```bash
-cd ExpenseTracker.Api
-dotnet restore
-dotnet run
-```
-
-### Frontend
-
-```bash
-cd expense-tracker-client
-npm install
-npm run dev
-```
