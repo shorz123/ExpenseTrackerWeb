@@ -2,6 +2,7 @@ using ExpenseTracker.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Api.Endpoints;
 using ExpenseTracker.Api.Services;
+using ExpenseTracker.Api.Extensions;
 
 //create app config object
 var builder = WebApplication.CreateBuilder(args);
@@ -9,10 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 //Gather API endpoint information for Swagger 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddExpenseRateLimiting();
+
 //Add Swagger services
 builder.Services.AddSwaggerGen();
 
-// Register ExpenseDbContext and configure it to use the PostgreSQL Server connection string from appsettings.json
+// Register ExpenseDbContext and configure it to use the PostgreSQL connection string from appsettings.json
 builder.Services.AddDbContext<ExpenseDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("ExpenseDatabase")));
@@ -46,7 +49,7 @@ if (app.Environment.IsDevelopment())
 
 // Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
-
+app.UseRateLimiter();
 app.MapExpenseEndpoints();
 
 //Start app

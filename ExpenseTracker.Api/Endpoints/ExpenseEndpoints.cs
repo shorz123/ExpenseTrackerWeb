@@ -18,7 +18,7 @@ public static class ExpenseEndpoints
         });
 
         // get by id
-        v1.MapGet("/{id}", async (int id, ExpenseService service) =>
+        v1.MapGet("/{id:int}", async (int id, ExpenseService service) =>
         {
             var expense = await service.GetExpenseByIdAsync(id);
 
@@ -28,7 +28,9 @@ public static class ExpenseEndpoints
         });
 
         // post
-        v1.MapPost("/", async (CreateExpenseDto dto, ExpenseService service) =>
+        v1.MapPost("/", async (
+            CreateExpenseDto dto,
+            ExpenseService service) =>
         {
             var result = await service.CreateExpenseAsync(dto);
 
@@ -40,10 +42,14 @@ public static class ExpenseEndpoints
             return Results.Created(
                 $"/api/v1/expenses/{result.Expense!.Id}",
                 result.Expense);
-        });
+        })
+        .RequireRateLimiting("write-policy");
 
         // update
-        v1.MapPut("/{id}", async (int id, UpdateExpenseDto dto, ExpenseService service) =>
+        v1.MapPut("/{id:int}", async (
+            int id,
+            UpdateExpenseDto dto,
+            ExpenseService service) =>
         {
             var result = await service.UpdateExpenseAsync(id, dto);
 
@@ -55,31 +61,38 @@ public static class ExpenseEndpoints
             }
 
             return Results.Ok(result.Expense);
-        });
+        })
+        .RequireRateLimiting("write-policy");
+
         // add demo expenses
         v1.MapPost("/seed", async (ExpenseService service) =>
-{
+        {
             var expenses = await service.SeedExpensesAsync();
 
             return Results.Ok(expenses);
-});
+        })
+        .RequireRateLimiting("write-policy");
 
-        // delete
-        v1.MapDelete("/{id}", async (int id, ExpenseService service) =>
+        // delete one expense
+        v1.MapDelete("/{id:int}", async (
+            int id,
+            ExpenseService service) =>
         {
             var deleted = await service.DeleteExpenseAsync(id);
 
             return deleted
                 ? Results.NoContent()
                 : Results.NotFound();
-        });
+        })
+        .RequireRateLimiting("write-policy");
 
-        // deletes every expense
+        // delete every expense
         v1.MapDelete("/all", async (ExpenseService service) =>
         {
             await service.DeleteAllExpensesAsync();
 
             return Results.NoContent();
-        });
+        })
+        .RequireRateLimiting("write-policy");
     }
 }

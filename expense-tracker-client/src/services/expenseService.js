@@ -1,34 +1,55 @@
 const API_URL = 'http://localhost:5113/api/v1/expenses'
 
+async function handleResponse(response, fallbackMessage) {
+    if (response.status === 429) {
+        throw new Error('Too many requests. Please wait a minute and try again.')
+    }
+
+    if (!response.ok) {
+        throw new Error(fallbackMessage)
+    }
+
+    return response
+}
+
 export async function getExpenses() {
     const response = await fetch(API_URL)
+
+    await handleResponse(response, 'Unable to load expenses')
+
     return await response.json()
 }
 
 export async function addExpense(expense) {
-    await fetch(API_URL, {
+    const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(expense)
     })
+
+    await handleResponse(response, 'Unable to add expense')
 }
 
 export async function updateExpense(id, expense) {
-    await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(expense)
     })
+
+    await handleResponse(response, 'Unable to update expense')
 }
 
 export async function deleteExpense(id) {
-    await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE'
     })
+
+    await handleResponse(response, 'Unable to delete expense')
 }
 
 export async function deleteAllExpenses() {
@@ -36,19 +57,15 @@ export async function deleteAllExpenses() {
         method: 'DELETE'
     })
 
-    if (!response.ok) {
-        throw new Error('Failed to delete all expenses')
-    }
+    await handleResponse(response, 'Unable to delete all expenses')
 }
+
 export async function seedExpenses() {
     const response = await fetch(`${API_URL}/seed`, {
         method: 'POST'
     })
 
-    if (!response.ok) {
-        throw new Error('Failed to add demo expenses')
-    }
+    await handleResponse(response, 'Unable to add demo expenses')
 
-    return response.json()
+    return await response.json()
 }
-

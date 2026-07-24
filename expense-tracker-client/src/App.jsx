@@ -22,8 +22,13 @@ function App() {
   }, [])
 
   async function loadExpenses() {
-    const data = await getExpenses()
-    setExpenses(data)
+    try {
+      const data = await getExpenses()
+      setExpenses(data)
+    } catch (error) {
+      console.error(error)
+      alert(error.message)
+    }
   }
 
   async function handleAddExpense() {
@@ -31,10 +36,12 @@ function App() {
       alert('Please fill out all fields')
       return
     }
+
     if (Number(amount) <= 0) {
       alert('Amount must be greater than zero')
       return
     }
+
     if (title.length > 50) {
       alert('Title must be 50 characters or less')
       return
@@ -46,15 +53,24 @@ function App() {
       date
     }
 
-    await addExpense(newExpense)
-
-    clearForm()
-    loadExpenses()
+    try {
+      await addExpense(newExpense)
+      clearForm()
+      await loadExpenses()
+    } catch (error) {
+      console.error(error)
+      alert(error.message)
+    }
   }
 
   async function handleDeleteExpense(id) {
-    await deleteExpense(id)
-    loadExpenses()
+    try {
+      await deleteExpense(id)
+      await loadExpenses()
+    } catch (error) {
+      console.error(error)
+      alert(error.message)
+    }
   }
 
   async function handleDeleteAllExpenses() {
@@ -66,9 +82,14 @@ function App() {
       return
     }
 
-    await deleteAllExpenses()
-    clearForm()
-    await loadExpenses()
+    try {
+      await deleteAllExpenses()
+      clearForm()
+      await loadExpenses()
+    } catch (error) {
+      console.error(error)
+      alert(error.message)
+    }
   }
 
   function handleEditExpense(expense) {
@@ -89,7 +110,7 @@ function App() {
       await loadExpenses()
     } catch (error) {
       console.error(error)
-      alert('Unable to add demo expenses')
+      alert(error.message)
     }
   }
 
@@ -98,14 +119,17 @@ function App() {
       alert('Please fill out all fields')
       return
     }
+
     if (Number(amount) <= 0) {
       alert('Amount must be greater than zero')
       return
     }
+
     if (title.length > 50) {
       alert('Title must be 50 characters or less')
       return
     }
+
     const updatedExpense = {
       id: editingId,
       title,
@@ -113,10 +137,14 @@ function App() {
       date
     }
 
-    await updateExpense(editingId, updatedExpense)
-
-    clearForm()
-    loadExpenses()
+    try {
+      await updateExpense(editingId, updatedExpense)
+      clearForm()
+      await loadExpenses()
+    } catch (error) {
+      console.error(error)
+      alert(error.message)
+    }
   }
 
   function clearForm() {
@@ -126,20 +154,25 @@ function App() {
     setEditingId(null)
   }
 
-  const totalAmount = expenses.reduce((sum, expense) => sum + expense.amount, 0)
+  const totalAmount = expenses.reduce(
+    (sum, expense) => sum + expense.amount,
+    0
+  )
 
   return (
     <div>
       <h1>Expense Tracker</h1>
+
       <a
-        href="https://github.com/shorz123/ExpenseTrackerWeb/tree/Development/ExpenseTracker.Api"
+        href="https://github.com/shorz123/ExpenseTrackerWeb/blob/main/README.md"
         target="_blank"
         rel="noopener noreferrer"
       >
         View GitHub Source Code
       </a>
+
       <p>
-        Technologies: React | ASP.NET Core | Entity Framework Core | PostgreSQL Server
+        Technologies: React | ASP.NET Core | Entity Framework Core | PostgreSQL
       </p>
 
       <div>
@@ -164,18 +197,28 @@ function App() {
         />
 
         {editingId === null ? (
-          <button onClick={handleAddExpense}>Add Expense</button>
+          <button onClick={handleAddExpense}>
+            Add Expense
+          </button>
         ) : (
-          <button onClick={handleSaveExpense}>Save Expense</button>
+          <button onClick={handleSaveExpense}>
+            Save Expense
+          </button>
         )}
 
-        <button onClick={clearForm}>Clear</button>
+        <button onClick={clearForm}>
+          Clear
+        </button>
       </div>
 
-      <h3>Expenses Total: ${totalAmount.toFixed(2)}</h3>
+      <h3>
+        Expenses Total: ${totalAmount.toFixed(2)}
+      </h3>
+
       <button onClick={handleDeleteAllExpenses}>
         Delete All Expenses
       </button>
+
       <button onClick={handleSeedExpenses}>
         Add Demo Data
       </button>
@@ -194,13 +237,27 @@ function App() {
           {expenses.map((expense) => (
             <tr key={expense.id}>
               <td>{expense.title}</td>
-              <td>${Number(expense.amount).toFixed(2)}</td>
-              <td>{new Date(expense.date).toLocaleDateString()}</td>
+
               <td>
-                <button onClick={() => handleEditExpense(expense)}>
+                ${Number(expense.amount).toFixed(2)}
+              </td>
+
+              <td>
+                {new Date(expense.date).toLocaleDateString()}
+              </td>
+
+              <td>
+                <button
+                  onClick={() => handleEditExpense(expense)}
+                >
                   Edit
                 </button>
-                <button onClick={() => handleDeleteExpense(expense.id)}>
+
+                <button
+                  onClick={() =>
+                    handleDeleteExpense(expense.id)
+                  }
+                >
                   Delete
                 </button>
               </td>
