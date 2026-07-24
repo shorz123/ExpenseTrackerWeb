@@ -5,14 +5,15 @@ A modern full-stack expense tracking application built with ASP.NET Core Web API
 ![Expense Tracker Demo](images/Animation.demo2.gif)
 
 ## Features
-Create, view, update, and delete expenses
-Clear all expense records
-Automatically populate the database with realistic seed data
-RESTful ASP.NET Core Web API
-React frontend built with JavaScript
-Entity Framework Core data access
-PostgreSQL database
-
+```text
+- Create, view, update, and delete expenses
+- Clear all expense records
+- Automatically populate the database with realistic seed data
+- RESTful ASP.NET Core Web API
+- React frontend built with JavaScript
+- Entity Framework Core data access
+- PostgreSQL database
+```
   
 ## Architecture
 
