@@ -14,6 +14,9 @@ A modern full-stack expense tracking application built with ASP.NET Core Web API
 - Entity Framework Core data access
 - PostgreSQL database
 ```
+## Planned Improvements
+Pagination, Error handling, Logging, Automated tests, Responsive UI, Docker, GitHub Actions, Database deployment, API deployment, Frontend deployment, Custom domain
+
   
 ## Architecture
 
