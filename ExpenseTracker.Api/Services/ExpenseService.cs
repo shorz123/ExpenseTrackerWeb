@@ -113,6 +113,11 @@ public class ExpenseService
             return "Title is required.";
         }
 
+        if (title.Length > 100)
+        {
+            return "Title must be 100 characters or less.";
+        }
+
         if (amount <= 0)
         {
             return "Amount must be greater than zero.";

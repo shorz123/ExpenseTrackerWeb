@@ -42,8 +42,8 @@ function App() {
       return
     }
 
-    if (title.length > 50) {
-      alert('Title must be 50 characters or less')
+    if (title.length > 100) {
+      alert('Title must be 100 characters or less')
       return
     }
 
@@ -125,8 +125,8 @@ function App() {
       return
     }
 
-    if (title.length > 50) {
-      alert('Title must be 50 characters or less')
+    if (title.length > 100) {
+      alert('Title must be 100 characters or less')
       return
     }
 
@@ -179,6 +179,7 @@ function App() {
         <input
           type="text"
           placeholder="Expense Title"
+          maxLength={100}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
