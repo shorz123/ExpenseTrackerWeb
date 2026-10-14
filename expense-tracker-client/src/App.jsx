@@ -10,6 +10,12 @@ import {
   seedExpenses
 } from './services/expenseService'
 
+function formatExpenseDate(dateString) {
+  const [year, month, day] = dateString.split('-').map(Number)
+
+  return new Date(year, month - 1, day).toLocaleDateString()
+}
+
 function App() {
   const [expenses, setExpenses] = useState([])
   const [title, setTitle] = useState('')
@@ -259,7 +265,7 @@ function App() {
               </td>
 
               <td>
-                {new Date(expense.date).toLocaleDateString()}
+                {formatExpenseDate(expense.date)}
               </td>
 
               <td>
