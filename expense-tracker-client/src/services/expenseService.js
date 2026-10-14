@@ -6,7 +6,22 @@ async function handleResponse(response, fallbackMessage) {
     }
 
     if (!response.ok) {
-        throw new Error(fallbackMessage)
+        let message = fallbackMessage
+
+        // The API returns validation errors as JSON strings.
+        if (response.status === 400) {
+            try {
+                const error = await response.json()
+
+                if (typeof error === 'string' && error.trim()) {
+                    message = error
+                }
+            } catch {
+                // Keep the fallback if the response isn't valid JSON.
+            }
+        }
+
+        throw new Error(message)
     }
 
     return response
