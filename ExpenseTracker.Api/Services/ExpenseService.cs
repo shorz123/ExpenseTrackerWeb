@@ -41,7 +41,7 @@ public class ExpenseService
 
     public async Task<(bool Success, string? ErrorMessage, ExpenseDto? Expense)> CreateExpenseAsync(CreateExpenseDto dto)
     {
-        var validationError = ValidateExpense(dto.Title, dto.Amount);
+        var validationError = ValidateExpense(dto.Title, dto.Amount, dto.Date);
 
         if (validationError is not null)
         {
@@ -70,7 +70,7 @@ public class ExpenseService
             return (false, "Expense not found.", null);
         }
 
-        var validationError = ValidateExpense(dto.Title, dto.Amount);
+        var validationError = ValidateExpense(dto.Title, dto.Amount, dto.Date);
 
         if (validationError is not null)
         {
@@ -106,7 +106,7 @@ public class ExpenseService
     await _db.Expenses.ExecuteDeleteAsync();
 }
 
-    private static string? ValidateExpense(string title, decimal amount)
+    private static string? ValidateExpense(string title, decimal amount, DateOnly date)
     {
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -118,9 +118,14 @@ public class ExpenseService
             return "Title must be 100 characters or less.";
         }
 
-        if (amount <= 0)
+        if (amount < 0.01m || amount > 1_000_000m)
         {
-            return "Amount must be greater than zero.";
+            return "Amount must be between $0.01 and $1,000,000.";
+        }
+
+        if (date == default)
+        {
+            return "Date is required.";
         }
 
         return null;

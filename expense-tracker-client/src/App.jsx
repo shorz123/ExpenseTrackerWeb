@@ -37,8 +37,14 @@ function App() {
       return
     }
 
-    if (Number(amount) <= 0) {
-      alert('Amount must be greater than zero')
+    const parsedAmount = Number(amount)
+
+    if (
+      !Number.isFinite(parsedAmount) ||
+      parsedAmount < 0.01 ||
+      parsedAmount > 1_000_000
+    ) {
+      alert('Amount must be between $0.01 and $1,000,000.')
       return
     }
 
@@ -49,7 +55,7 @@ function App() {
 
     const newExpense = {
       title,
-      amount: Number(amount),
+      amount: parsedAmount,
       date
     }
 
@@ -120,8 +126,14 @@ function App() {
       return
     }
 
-    if (Number(amount) <= 0) {
-      alert('Amount must be greater than zero')
+    const parsedAmount = Number(amount)
+
+    if (
+      !Number.isFinite(parsedAmount) ||
+      parsedAmount < 0.01 ||
+      parsedAmount > 1_000_000
+    ) {
+      alert('Amount must be between $0.01 and $1,000,000.')
       return
     }
 
@@ -133,7 +145,7 @@ function App() {
     const updatedExpense = {
       id: editingId,
       title,
-      amount: Number(amount),
+      amount: parsedAmount,
       date
     }
 
@@ -187,6 +199,9 @@ function App() {
         <input
           type="number"
           placeholder="Amount"
+          min="0.01"
+          max="1000000"
+          step="0.01"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
